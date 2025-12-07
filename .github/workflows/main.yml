@@ -1,3 +1,24 @@
-+ Project Status: Active
-! Version: V.2.0.0 Neon Edition
-# License: Apache
+export default {
+    name: "fastflux",
+    category: "maker",
+    command: ["fastflux", "fflux"],
+    run: async (conn, m) => {
+        if (!m.text) return m.reply('Masukkan deskripsi yang valid!\nContoh: .fastflux cewek rambut putih di taman');
+
+        try {
+            const basePrompt = m.text.trim();
+            const prompt = `anime style, high quality, detailed illustration of ${basePrompt}, ultra-detailed, soft lighting, trending on pixiv, masterpiece, beautiful composition, 4k render`;
+
+            const encoded = encodeURIComponent(prompt);
+            const apiUrl = `https://fast-flux-demo.replicate.workers.dev/api/generate-image?text=${encoded}`;
+
+            await conn.sendMessage(m.chat, {
+                image: { url: apiUrl },
+                caption: `⚡ *Fast-Flux AI Image*\n🎨 Prompt: ${basePrompt}`
+            }, { quoted: m });
+        } catch (err) {
+            console.error('Error:', err);
+            m.reply('⚠️ Gagal membuat gambar dari Fast-Flux!');
+        }
+    }
+};
